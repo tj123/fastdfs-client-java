@@ -3,12 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.csource</groupId>
-  <artifactId>fastdfs-client-parent</artifactId>
+  <artifactId>fastdfs-client-java</artifactId>
   <version>1.27-SNAPSHOT</version>
-  
   <name>fastdfs-client-java</name>
   <description>fastdfs client for java</description>
-  
   <packaging>jar</packaging>
 
   <properties>
@@ -19,14 +17,6 @@
     <jdk.version>1.6</jdk.version>
   </properties>
 
-  <modules>
-    <module>fastdfs-client-java</module>
-    <module>fastdfs-client-api</module>
-    <module>fastdfs-client</module>
-    <module>fastdfs-client-spring-boot-starter</module>
-    <module>fastdfs-client-demo</module>
-  </modules>
-  
   <build>
     <plugins>
       <plugin>
