@@ -42,14 +42,17 @@ public class FdfsTest {
         for (int i = 0; i < 3; i++) {
 
 
-            new Thread(() ->{
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        log.info(Thread.currentThread().getName());
 
-                try {
-                    upload();
-                } catch (Exception e) {
-                   log.error(e.getMessage(),e);
+                        log.info(client.upload(new File("D:\\default.xml")));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-
             }).start();
 
 

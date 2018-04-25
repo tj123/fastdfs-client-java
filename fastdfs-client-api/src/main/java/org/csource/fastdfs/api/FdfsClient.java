@@ -1,8 +1,6 @@
 package org.csource.fastdfs.api;
 
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.InputStream;
 
@@ -16,21 +14,13 @@ public interface FdfsClient {
 
     /**
      * 上传文件
-     * 返回 fileId
      */
-    String upload(MultipartFile file) throws Exception;
+    String upload(byte[] fileContent, String fileName) throws Exception;
 
     /**
      * 上传文件
-     * 返回 fileId
      */
-    String upload(File file, String fileName) throws Exception;
-
-    /**
-     * 上传文件
-     * 返回 fileId
-     */
-    String upload(MultipartFile file, String fileName) throws Exception;
+    String upload(InputStream inputStream, String fileName) throws Exception;
 
     /**
      * 根据组名和远程文件名来删除一个文件
@@ -48,11 +38,6 @@ public interface FdfsClient {
      * 更新一个已经存在的文件
      */
     String update(String oldFileId, File newFile) throws Exception;
-
-    /**
-     * 更新一个已经存在的文件
-     */
-    String update(String oldFileId, File newFile, String newFileName) throws Exception;
 
     /**
      * 文件下载

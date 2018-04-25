@@ -1,10 +1,7 @@
 package org.csource.fastdfs;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.csource.fastdfs.api.FdfsClient;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -17,74 +14,29 @@ import java.util.Properties;
  */
 public class FdfsClientImpl implements FdfsClient {
 
-    private static final Log log = LogFactory.getLog(FdfsClientImpl.class);
-
     public void init(Properties clientProperties) throws Exception {
         ClientGlobal.initByProperties(clientProperties);
     }
 
     @Override
     public String upload(File file) throws Exception {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            int len = fis.available();
-            byte[]  file_buff = new byte[len];
-            fis.read(file_buff);
-            return new StorageClient1().upload_file1(file_buff, getFileExt(file.getName()), null);
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
-        }
-    }
-
-
-    @Override
-    public String upload(MultipartFile file) throws Exception {
-        InputStream fis = null;
-        try {
-            fis = file.getInputStream();
-            byte[] file_buff = null;
-            int len = fis.available();
-            file_buff = new byte[len];
-            fis.read(file_buff);
-            return new StorageClient1().upload_file1(file_buff, getFileExt(file.getOriginalFilename()), null);
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
-        }
+        return upload(new FileInputStream(file), file.getName());
     }
 
     @Override
-    public String upload(File file, String fileName) throws Exception {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
-            int len = fis.available();
-            byte[] file_buff = new byte[len];
-            fis.read(file_buff);
-            return new StorageClient1().upload_file1(file_buff, getFileExt(fileName), null);
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
-        }
+    public String upload(byte[] fileContent, String fileName) throws Exception {
+        return new StorageClient1().upload_file1(fileContent, getFileExt(fileName), null);
     }
 
     @Override
-    public String upload(MultipartFile file, String fileName) throws Exception {
-        InputStream fis = null;
+    public String upload(InputStream inputStream, String fileName) throws Exception {
         try {
-            fis = file.getInputStream();
-            int len = fis.available();
-            byte[] file_buff = new byte[len];
-            fis.read(file_buff);
-            return new StorageClient1().upload_file1(file_buff, getFileExt(fileName), null);
+            byte[] buff = new byte[inputStream.available()];
+            inputStream.read(buff);
+            return upload(buff, fileName);
         } finally {
-            if (fis != null) {
-                fis.close();
+            if (inputStream != null) {
+                inputStream.close();
             }
         }
     }
@@ -107,13 +59,6 @@ public class FdfsClientImpl implements FdfsClient {
     }
 
     @Override
-    public String update(String oldFileId, File newFile, String newFileName) throws Exception {
-        String fileId = upload(newFile, newFileName);
-        delete(oldFileId);
-        return fileId;
-    }
-
-    @Override
     public InputStream download(String fileId) throws Exception {
         byte[] bytes = new StorageClient1().download_file1(fileId);
         return new ByteArrayInputStream(bytes);
@@ -127,9 +72,8 @@ public class FdfsClientImpl implements FdfsClient {
     private String getFileExt(String fileName) {
         if (StringUtils.isBlank(fileName) || !fileName.contains(".")) {
             return fileName;
-        } else {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
         }
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
 }
